@@ -23,7 +23,7 @@ const Roles = seq.define('roles', {
     comment: '角色是否被启用'
   },
   user_number: {
-    type: Sequelize.NUMBER,
+    type: Sequelize.INTEGER,
     allowNull: false,
     defaultValue: 0,
     comment: '角色被用户引用数'

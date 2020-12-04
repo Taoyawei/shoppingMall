@@ -21,12 +21,12 @@ const Menus = seq.define('menus', {
     comment: '菜单描述'
   },
   menu_ser: {
-    type: Sequelize.NUMBER,
+    type: Sequelize.INTEGER,
     allowNull: false,
     comment: '同级排序位数'
   },
   parent_id: {
-    type: Sequelize.NUMBER,
+    type: Sequelize.INTEGER,
     allowNull: false,
     defaultValue: -1,
     comment: '上级菜单id'

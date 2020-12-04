@@ -16,8 +16,7 @@ const Brands = seq.define('brands', {
     comment: '品牌logo'
   },
   order_number: {
-    type: Sequelize.NUMBER,
-    allowNull: false,
+    type: Sequelize.INTEGER,
     defaultValue: 0,
     comment: '品牌订单数'
   }

@@ -5,10 +5,15 @@
 const seq = require('../seq.js')
 const Sequelize = require('sequelize')
 const Commoditys = seq.define('commoditys', {
-  com_type: {
-    type: Sequelize.STRING,
+  // com_type: {
+  //   type: Sequelize.STRING,
+  //   allowNull: false,
+  //   comment: '商品类型'
+  // },
+  com_type_id: {
+    type: Sequelize.INTEGER,
     allowNull: false,
-    comment: '商品类型'
+    comment: '商品类型id'
   },
   name: {
     type: Sequelize.STRING,
@@ -20,25 +25,30 @@ const Commoditys = seq.define('commoditys', {
     allowNull: false,
     comment: '商品品牌'
   },
+  brand_id: {
+    type: Sequelize.INTEGER,
+    allowNull: false,
+    comment: '品牌id'
+  },
   des: {
     type: Sequelize.TEXT,
     allowNull: true,
     comment: '商品描述'
   },
   price: {
-    type: Sequelize.NUMBER,
+    type: Sequelize.INTEGER,
     allowNull: false,
     defaultValue: 0,
     comment: '商品价格'
   },
   number: {
-    type: Sequelize.NUMBER,
+    type: Sequelize.INTEGER,
     allowNull: false,
     defaultValue: 0,
     comment: '商品存储数量'
   },
   weight: {
-    type: Sequelize.NUMBER,
+    type: Sequelize.INTEGER,
     allowNull: false,
     defaultValue: 0,
     comment: '商品重量'
@@ -60,7 +70,7 @@ const Commoditys = seq.define('commoditys', {
     comment: '商品详情，一般是富文本'
   },
   order_number: {
-    type: Sequelize.NUMBER,
+    type: Sequelize.INTEGER,
     allowNull: false,
     defaultValue: 0,
     comment: '商品订单数量，默认为0'
