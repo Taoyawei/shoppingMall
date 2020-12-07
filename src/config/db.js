@@ -16,7 +16,7 @@ const MYSQL_CONFIG = {
 // redis配置
 const REDIS_CONFIG = {
   host: '127.0.0.1',
-  prot: 6379
+  port: 6379
 }
 
 // 线上环境配置

@@ -11,6 +11,7 @@ const { requestParams } = require('../utils/errorInfo.js')
 const {
   doGoLogin
 } = require('../modules/login.js')
+const {set, del, exists} = require('../redis/index')
 /**
  * 登录接口
  * @param account 账号
@@ -29,10 +30,15 @@ async function doLogin ({account, password}) {
     })
   } else {
     const token = doCrypto(password) + '=' + (new Date()).getTime()
-    return new SuccessModal({
+    const info = {
       token,
       ...result
-    })
+    }
+    if (exists('userInfo')) {
+      del('userInfo')
+    }
+    set('userInfo', JSON.stringify(info))
+    return new SuccessModal(info)
   }
 }
 

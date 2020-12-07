@@ -7,10 +7,7 @@ const {
   doLogin
 } = require('../controller/login')
 
-// router.post('/login', async (ctx, next) => {
-//   console.log('123')
-//   ctx.body = '登录成功'
-// })
+// const {checkLogin} = require('../utils/middle.js')
 
 // 登录接口
 router.post('/login', async (ctx, next) => {
