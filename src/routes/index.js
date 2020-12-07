@@ -6,6 +6,6 @@ const router = require('koa-router')()
 
 const login = require('./login.js')
 
-router.use('/api/login', login.routes(), login.allowedMethods())
+router.use('/api', login.routes(), login.allowedMethods())
 
 module.exports = router
