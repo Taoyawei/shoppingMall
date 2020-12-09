@@ -7,6 +7,7 @@ const onerror = require('koa-onerror')
 const koaBody = require('koa-body')
 const logger = require('koa-logger')
 const routes = require('./routes/index.js')
+const cors = require('koa2-cors')
 
 // const index = require('./routes/index')
 // const users = require('./routes/users')
@@ -28,6 +29,7 @@ app.use(koaBody({
     }
   }
 }))
+app.use(cors())
 app.use(json())
 app.use(logger())
 app.use(require('koa-static')(__dirname + '/public'))

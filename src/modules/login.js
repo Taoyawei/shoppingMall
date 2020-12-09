@@ -44,6 +44,42 @@ async function doGoLogin ({account, password}) {
     }
   }
 }
+/**
+ * 修改密码
+ * @param {int} id 用户id
+ * @param {string} password 老密码
+ * @param {string} newPassword 新密码
+ */
+async function doModifyPassword ({id, password, newPassword}) {
+  try {
+    const user = await Users.findOne({
+      where: {
+        id,
+        password
+      }
+    })
+    if (!user) {
+      return {
+        error: '用户不存在,请重新登录'
+      }
+    }
+    const item = {
+      password: newPassword
+    }
+    const result = await Users.update(item, {
+      where: {
+        id,
+        password
+      }
+    })
+    return resultHandle(result)
+  } catch(err) {
+    return {
+      error: err.errors ? err.errors[0].message : '链接错误'
+    }
+  }
+}
 module.exports = {
-  doGoLogin
+  doGoLogin,
+  doModifyPassword
 }

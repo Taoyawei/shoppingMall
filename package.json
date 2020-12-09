@@ -24,6 +24,7 @@
   "devDependencies": {
     "cross-env": "^7.0.2",
     "koa-router": "^7.4.0",
+    "koa2-cors": "^2.0.6",
     "mysql2": "^2.2.5",
     "nodemon": "^1.19.1",
     "redis": "^3.0.2",

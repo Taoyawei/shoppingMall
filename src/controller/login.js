@@ -9,9 +9,10 @@ const {
 } = require('../utils/response.js')
 const { requestParams } = require('../utils/errorInfo.js')
 const {
-  doGoLogin
+  doGoLogin,
+  doModifyPassword
 } = require('../modules/login.js')
-const {set, del, exists} = require('../redis/index')
+const {set, del, exists, get} = require('../redis/index')
 /**
  * 登录接口
  * @param account 账号
@@ -41,7 +42,32 @@ async function doLogin ({account, password}) {
     return new SuccessModal(info)
   }
 }
-
+/**
+ * 修改密码
+ * @param {int} id 用户id
+ * @param {string} password 老密码
+ * @param {string} newPassword 新密码
+ */
+async function modifyPassword ({id, password, newPassword}) {
+  if (!id || !password || !newPassword) return new ErrorModal(requestParams)
+  const info = await get('userInfo')
+  if (info.id !== id) {
+    return new ErrorModal({
+      code: 1002,
+      message: '抱歉，您无权修改'
+    })
+  }
+  const result = await doModifyPassword({id, password, newPassword})
+  if (result && result.error) {
+    return new ErrorModal({
+      code: 1003,
+      message: result.error
+    })
+  } else {
+    return new SuccessModal()
+  }
+}
 module.exports = {
-  doLogin
+  doLogin,
+  modifyPassword
 }
