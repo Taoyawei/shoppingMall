@@ -78,8 +78,43 @@ async function doConfigRole (role_id, list) {
     }
   }
 }
+/**
+ * 修改角色
+ * @param {int} id 角色id
+ * @param {string} role_name 角色名称
+ * @param {string} role_des 角色描述
+ * @param {boolean} isEnable 是否启用
+ */
+async function doMobileRole ({id, role_name, role_des, isEnable}) {
+  try {
+    const item = {
+      role_name,
+      role_des,
+      isEnable
+    }
+    const role = await Roles.findOne({
+      where: {
+        id
+      }
+    })
+    if (!role) {
+      return {
+        error: '角色不存在'
+      }
+    }
+    const result = await Roles.update(item, {
+      where: {
+        id
+      }
+    })
+    return resultHandle(result)
+  } catch(err) {
+    return err.errors ? err.errors[0].message : '链接错误'
+  }
+}
 module.exports = {
   doAddRole,
   doConfigRole,
-  doGetList
+  doGetList,
+  doMobileRole
 }

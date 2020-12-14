@@ -7,12 +7,13 @@ const {checkLogin} = require('../utils/middle.js')
 const {
   addRole,
   configRole,
-  getList
+  getList,
+  mobileRole
 } = require('../controller/role.js')
 
 // 添加角色
 router.post('/add', checkLogin, async (ctx, next) => {
-  const {role_name, role_des, isEnable} = ctx.request.body
+  const {id, role_name, role_des, isEnable} = ctx.request.body
   ctx.body = await addRole({
     role_name,
     role_des,
@@ -28,5 +29,10 @@ router.post('/get/list', checkLogin, async (ctx, next) => {
 router.post('/to/config', checkLogin, async (ctx, next) => {
   const {role_id, list} = ctx.request.body // 菜单集合
   ctx.body = await configRole(role_id, list)
+})
+// 修改角色
+router.post('/mobile/role', checkLogin, async (ctx, next) => {
+  const { role_name, role_des, isEnable } = ctx.request.body
+  ctx.body = await mobileRole({role_name, role_des, isEnable})
 })
 module.exports = router

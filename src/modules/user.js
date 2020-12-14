@@ -12,7 +12,7 @@ const {resultHandle} = require('../utils/utils.js')
 async function doGetList (pageNo, pageSize) {
   try {
     const result = await Users.findAndCountAll({
-      attributes: ['account', 'name', 'email', 'add_time', 'login_time', 'isEnable', 'mobile'],
+      attributes: ['account', 'name', 'email', 'add_time', 'login_time', 'isEnable', 'mobile', 'password_account'],
       limit: pageSize,
       offset: (pageNo - 1) * pageSize
     })
@@ -81,8 +81,106 @@ async function doRemoveUser (user_id) {
     }
   }
 }
+/**
+ * 添加用户
+ * @param {string} account 账号
+ * @param {string} name 姓名
+ * @param {string} email 邮箱
+ * @param {string} password 密码
+ * @param {string} mobile 手机号
+ * @param {boolean} isEnable 是否启用
+ * @param {string} password_account 密码明文
+ */
+async function doAddUser ({account, name, email, password, mobile, isEnable, password_account}) {
+  try {
+    const reuslt = await Users.create({
+      account,
+      name,
+      email,
+      password,
+      mobile,
+      isEnable,
+      password_account,
+      add_time: (new Date()).getTime()
+    })
+    return resultHandle(result)
+  } catch(err) {
+    return {
+      error: err.errors ? err.errors[0].message : '链接错误'
+    }
+  }
+}
+/**
+ * 修改用户基本信息
+ * @param {int} id 用户id
+ * @param {string} account 账号
+ * @param {string} name 姓名
+ * @param {string} email 邮箱
+ * @param {string} password 密码
+ * @param {string} mobile 手机号
+ * @param {boolean} isEnable 是否启用
+ * @param {string} password_account 密码明文
+ */
+async function doMobileBasic ({ id, account, name, email, password, mobile, isEnable, password_account }) {
+  try {
+    const item = {
+      account,
+      name,
+      email,
+      password,
+      mobile,
+      isEnable,
+      password_account
+    }
+    const result = await Users.update(item, {
+      where: {
+        id
+      }
+    })
+    return resultHandle(result)
+  } catch(err) {
+    return {
+      error: err.errors ? err.errors[0].message : '链接错误'
+    }
+  }
+}
+/**
+ * 修改用户角色
+ * @param {int} id 用户id
+ * @param {array} role_ids 角色id数组
+ */
+async function doMobileRole ({id, role_ids}) {
+  try {
+    const user = await Users.findOne({
+      where: {
+        id
+      }
+    })
+    if (!user) {
+      return {
+        errors: '用户不存在'
+      }
+    }
+    const roles = await Roles.findAll({
+      where: {
+        id: role_ids
+      }
+    })
+    // 先删除中间表的初始数据
+    await user.removeRoles()
+    await user.setRoles(roles)
+    return []
+  } catch(err) {
+    return {
+      error: err.errors ? err.errors[0].message : '链接错误'
+    }
+  }
+}
 module.exports = {
   doGetList,
   doAddRole,
-  doRemoveUser
+  doRemoveUser,
+  doAddUser,
+  doMobileBasic,
+  doMobileRole
 }

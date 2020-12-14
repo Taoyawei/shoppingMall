@@ -7,8 +7,10 @@ const {requestParams} = require('../utils/errorInfo.js')
 const {
   doAddRole,
   doConfigRole,
-  doGetList
+  doGetList,
+  doMobileRole
 } = require('../modules/role.js')
+const {paramDefect, returnData} = require('../utils/utils.js')
  /**
   * 添加角色
   * @param {string} role_name 角色名称
@@ -61,8 +63,23 @@ async function configRole (role_id, list) {
     return new SuccessModal()
   }
 }
+/**
+ * 修改角色
+ * @param {int} id 角色id
+ * @param {string} role_name 角色名称
+ * @param {string} role_des 角色描述
+ * @param {boolean} isEnable 是否启用
+ */
+async function mobileRole ({id, role_name, role_des, isEnable}) {
+  if (!paramDefect({id, role_name, role_des, isEnable})) {
+    return new ErrorModal(requestParams)
+  }
+  const result = await doMobileRole({id, role_name, role_des, isEnable})
+  return returnData(2003, result)
+}
 module.exports = {
   addRole,
   configRole,
-  getList
+  getList,
+  mobileRole
 }

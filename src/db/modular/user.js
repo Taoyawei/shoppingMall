@@ -42,6 +42,11 @@ const Users = seq.define('users', {
     allowNull: false,
     comment: '密码'
   },
+  password_account: {
+    type: Sequelize.STRING,
+    allowNull: false,
+    comment: '密码明文'
+  },
   mobile: {
     type: Sequelize.STRING(11),
     allowNull: false,
