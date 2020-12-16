@@ -6,7 +6,8 @@ const router = require('koa-router')()
 const {checkLogin} = require('../utils/middle.js')
 const {
   addMenu,
-  getList
+  getList,
+  modifyMenu
 } = require('../controller/menu.js')
 // 添加菜单
 router.post('/add', checkLogin, async (ctx, next) => {
@@ -23,5 +24,18 @@ router.post('/add', checkLogin, async (ctx, next) => {
 // 获取菜单列表
 router.get('/list', checkLogin, async (ctx, next) => {
   ctx.body = await getList()
+})
+// 修改菜单
+router.post('/modify', checkLogin, async (ctx, next) => {
+  const {id, menu_name, code, des, menu_ser, parent_id, menu_icon} = ctx.request.body
+  ctx.body = await modifyMenu({
+    id,
+    menu_name,
+    code,
+    des,
+    menu_ser,
+    parent_id,
+    menu_icon
+  })
 })
 module.exports = router

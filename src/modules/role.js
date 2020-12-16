@@ -2,8 +2,8 @@
  * @abstract 角色模块的modules
  * @author taoyawei
  */
-const {Roles, Menus} = require('../db/modular/index.js')
-const {resultHandle} = require('../utils/utils.js')
+const { Roles, Menus, Users } = require('../db/modular/index.js')
+const {resultHandle, returnData} = require('../utils/utils.js')
 /**
  * 添加角色
  * @param {string} role_name 角色名称
@@ -112,9 +112,43 @@ async function doMobileRole ({id, role_name, role_des, isEnable}) {
     return err.errors ? err.errors[0].message : '链接错误'
   }
 }
+/**
+ * 删除角色
+ * @param {int} role_id 角色id
+ */
+async function doDeleteRole (role_id) {
+  /**
+   * 思路：
+   * 1. 角色表和用户表，菜单表都有关联，但是二者不一样，对于用户表，角色是辅，用户是主，对于菜单表，角色是主
+   * 2. 所以我们先要知道这个角色有多少个用户用了，并且知道有没有被用，有没有设置菜单权限
+   * 3. 根据上述条件删除多对多关系
+   */
+  try {
+    const role = await Roles.findOne({
+      where: {
+        id: role_id
+      }
+    })
+    if (!role) return { error: '该角色不存在' }
+    const user_number = await role.getUsers()
+    const menu_number = await role.getMenus()
+    // console.log(user_number.length)
+    // console.log('****************')
+    // console.log(menu_number.length)
+    if (user_number && user_number.length > 0) await role.removeUsers(user_number)
+    if (menu_number && menu_number.length > 0) await role.removeMenus(menu_number)
+    return returnData([])
+  } catch (err) {
+    console.log(err)
+    return {
+      error: err.errors ? err.errors[0].message : '链接错误'
+    }
+  }
+}
 module.exports = {
   doAddRole,
   doConfigRole,
   doGetList,
-  doMobileRole
+  doMobileRole,
+  doDeleteRole
 }

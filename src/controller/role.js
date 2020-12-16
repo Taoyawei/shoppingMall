@@ -8,7 +8,8 @@ const {
   doAddRole,
   doConfigRole,
   doGetList,
-  doMobileRole
+  doMobileRole,
+  doDeleteRole
 } = require('../modules/role.js')
 const {paramDefect, returnData} = require('../utils/utils.js')
  /**
@@ -77,9 +78,21 @@ async function mobileRole ({id, role_name, role_des, isEnable}) {
   const result = await doMobileRole({id, role_name, role_des, isEnable})
   return returnData(2003, result)
 }
+/**
+ * 删除角色
+ * @param {int} role_id 角色id
+ */
+async function deleteRole (role_id) {
+  if (!paramDefect({role_id})) {
+    return new ErrorModal(requestParams)
+  }
+  const result = await doDeleteRole(role_id)
+  return returnData(2004, result)
+}
 module.exports = {
   addRole,
   configRole,
   getList,
-  mobileRole
+  mobileRole,
+  deleteRole
 }

@@ -6,8 +6,10 @@ const {ErrorModal, SuccessModal} = require('../utils/response.js')
 const {requestParams} = require('../utils/errorInfo.js')
 const {
   doAddMenu,
-  doGetList
+  doGetList,
+  doModifyMenu
 } = require('../modules/menu.js')
+const {returnData, paramDefect} = require('../utils/utils.js')
  /**
   * menu_name, parent_id, code, des, menu_ser, menu_icon
   * 新增菜单
@@ -52,7 +54,24 @@ async function getList () {
     return new SuccessModal(result)
   }
 }
+/**
+ * 修改菜单
+ * @param {int} id 菜单id
+ * @param {string} menu_name 菜单名称
+ * @param {string} code 菜单code
+ * @param {string} des 菜单描述
+ * @param {int} menu_ser 菜单排序
+ * @param {int} parent_id 父级id
+ * @param {string} menu_icon 菜单icon
+ */
+async function modifyMenu ({id, menu_name, code, des, menu_ser, parent_id, menu_icon}) {
+  if (!paramDefect({id, menu_name, code, menu_ser, menu_icon})) return new ErrorModal(requestParams)
+  const result = await doModifyMenu({id, menu_name, code, des, menu_ser, parent_id, menu_icon})
+  // console.log(result)
+  return returnData(3003, result)
+}
 module.exports = {
   addMenu,
-  getList
+  getList,
+  modifyMenu
 }

@@ -8,7 +8,8 @@ const {
   addRole,
   configRole,
   getList,
-  mobileRole
+  mobileRole,
+  deleteRole
 } = require('../controller/role.js')
 
 // 添加角色
@@ -34,5 +35,10 @@ router.post('/to/config', checkLogin, async (ctx, next) => {
 router.post('/mobile/role', checkLogin, async (ctx, next) => {
   const { role_name, role_des, isEnable } = ctx.request.body
   ctx.body = await mobileRole({role_name, role_des, isEnable})
+})
+// 删除角色
+router.post('/delete', checkLogin, async (ctx, next) => {
+  const { role_id } = ctx.request.body
+  ctx.body = await deleteRole(role_id)
 })
 module.exports = router

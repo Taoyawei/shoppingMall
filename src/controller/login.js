@@ -38,7 +38,7 @@ async function doLogin ({account, password}) {
     if (exists('userInfo')) {
       del('userInfo')
     }
-    set('userInfo', JSON.stringify(info))
+    set('userInfo', JSON.stringify(info), 24*60*60)
     return new SuccessModal(info)
   }
 }

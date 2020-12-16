@@ -16,6 +16,7 @@ function resultHandle (result) {
 function paramDefect (obj) {
   let isTrue = true
   for (let key in obj) {
+    // console.log(obj[key])
     // if (!obj[key] && obj[key] !== 0 && obj[key] !== false) isTrue = false
     if (typeof(obj[key]) !== 'boolean' && obj[key] !== 0 && !obj[key]) isTrue = false
   }
