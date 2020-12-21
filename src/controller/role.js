@@ -19,7 +19,7 @@ const {paramDefect, returnData} = require('../utils/utils.js')
   * @param {boolean} isEnable 是否启用 
   */
 async function addRole ({role_name, role_des, isEnable}) {
-  if (!role_name || !role_des || !isEnable) return new ErrorModal(requestParams)
+  if (!role_name) return new ErrorModal(requestParams)
   const result = await doAddRole({role_name, role_des, isEnable})
   if (result && result.error) {
     return new ErrorModal({
@@ -34,10 +34,11 @@ async function addRole ({role_name, role_des, isEnable}) {
  * 获取角色列表
  * @param {int} pageNo 页数
  * @param {int} pageSize 每页条数
+ * @param {string} name 查询条件
  */
-async function getList (pageNo, pageSize) {
+async function getList (pageNo, pageSize, name) {
   if (!pageNo || !pageSize) return new ErrorModal(requestParams)
-  const result = await doGetList(pageNo, pageSize)
+  const result = await doGetList(pageNo, pageSize, name)
   if (result && result.error) {
     return new ErrorModal({
       code: 2003,

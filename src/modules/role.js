@@ -4,6 +4,7 @@
  */
 const { Roles, Menus, Users } = require('../db/modular/index.js')
 const {resultHandle, returnData} = require('../utils/utils.js')
+const {Op} = require('sequelize')
 /**
  * 添加角色
  * @param {string} role_name 角色名称
@@ -29,15 +30,28 @@ async function doAddRole ({role_name, role_des, isEnable}) {
 /**
  * 获取角色列表
  * @param {int} pageNo 页数 
- * @param {int} pageSize 每页条数 
+ * @param {int} pageSize 每页条数
+ * @param {string} name 查询条件
  */
-async function doGetList (pageNo, pageSize) {
+async function doGetList (pageNo, pageSize, name) {
   try {
-    const result = Roles.findAll({
+    const item = name ? {
+      [Op.or]: [
+        {
+          id: name
+        },
+        {
+          role_name: name
+        }
+      ]
+    } : {}
+    const result = Roles.findAndCountAll({
       attributes: ['id', 'role_name', 'role_des', 'isEnable', 'user_number', 'add_time'],
+      where: item,
       limit: pageSize,
       offset: (pageNo - 1) * pageSize
     })
+    return result
   } catch(err) {
     return {
       error: err.errors ? err.errors[0].message : '链接错误'
@@ -132,12 +146,14 @@ async function doDeleteRole (role_id) {
     if (!role) return { error: '该角色不存在' }
     const user_number = await role.getUsers()
     const menu_number = await role.getMenus()
-    // console.log(user_number.length)
-    // console.log('****************')
-    // console.log(menu_number.length)
     if (user_number && user_number.length > 0) await role.removeUsers(user_number)
     if (menu_number && menu_number.length > 0) await role.removeMenus(menu_number)
-    return returnData([])
+    const result = await Roles.destroy({
+      where: {
+        id: role_id
+      }
+    })
+    return returnData(result)
   } catch (err) {
     console.log(err)
     return {

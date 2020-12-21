@@ -4,14 +4,28 @@
  */
 const {Users, Roles} = require('../db/modular/index.js')
 const {resultHandle} = require('../utils/utils.js')
+const {Op} = require('sequelize')
 /**
  * 获取用户列表
  * @param {string} name 搜索条件
  * @param {int} pageNo 页数
  * @param {int} pageSize 每页条数
  */
-async function doGetList (name, pageNo, pageSize) {
-  const item = name ? {name: name} : {}
+async function doGetList (pageNo, pageSize, name) {
+  // const item = name ? {name: name} : {}
+  const item  = name ? {
+    [Op.or]: [
+      {
+        name: name
+      },
+      {
+        account: name
+      },
+      {
+        mobile: name
+      }
+    ]
+  } : {}
   try {
     const result = await Users.findAndCountAll({
       attributes: ['id', 'account', 'name', 'email', 'add_time', 'login_time', 'isEnable', 'mobile', 'password_account'],
@@ -68,6 +82,7 @@ async function doRemoveUser (user_id) {
         id: user_id
       }
     })
+    // console.log(user)
     // 清除中间表
     await user.removeRoles()
 

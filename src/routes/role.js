@@ -14,7 +14,7 @@ const {
 
 // 添加角色
 router.post('/add', checkLogin, async (ctx, next) => {
-  const {id, role_name, role_des, isEnable} = ctx.request.body
+  const {role_name, role_des, isEnable} = ctx.request.body
   ctx.body = await addRole({
     role_name,
     role_des,
@@ -23,8 +23,8 @@ router.post('/add', checkLogin, async (ctx, next) => {
 })
 // 获取角色列表
 router.post('/get/list', checkLogin, async (ctx, next) => {
-  const { pageNo, pageSize } = ctx.request.body
-  ctx.body = await getList(pageNo, pageSize)
+  const { pageNo, pageSize, name } = ctx.request.body
+  ctx.body = await getList(pageNo, pageSize, name)
 })
 // 角色配置权限
 router.post('/to/config', checkLogin, async (ctx, next) => {
@@ -33,8 +33,8 @@ router.post('/to/config', checkLogin, async (ctx, next) => {
 })
 // 修改角色
 router.post('/mobile/role', checkLogin, async (ctx, next) => {
-  const { role_name, role_des, isEnable } = ctx.request.body
-  ctx.body = await mobileRole({role_name, role_des, isEnable})
+  const { id, role_name, role_des, isEnable } = ctx.request.body
+  ctx.body = await mobileRole({id, role_name, role_des, isEnable})
 })
 // 删除角色
 router.post('/delete', checkLogin, async (ctx, next) => {

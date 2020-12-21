@@ -28,7 +28,7 @@ router.post('/add/user', checkLogin, async (ctx, next) => {
 // 获取用户
 router.post('/get/list', checkLogin, async (ctx, next) => {
   const { name, pageNo, pageSize } = ctx.request.body
-  ctx.body = await getList(name, pageNo, pageSize)
+  ctx.body = await getList(pageNo, pageSize, name)
 })
 // 用户添加角色
 router.post('/add/role', checkLogin, async (ctx, next) => {
