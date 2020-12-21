@@ -2,7 +2,7 @@
  * @abstract 菜单模块的modules
  * @author taoyawei
  */
-const {Menus} = require('../db/modular/index.js')
+const {Menus, Roles} = require('../db/modular/index.js')
 const {resultHandle} = require('../utils/utils.js')
 /**
  * 添加菜单
@@ -101,8 +101,30 @@ async function doModifyMenu ({id, menu_name, parent_id, code, des, menu_ser, men
     }
   }
 }
+/**
+ * 删除菜单
+ * @param {number} menu_id 菜单id
+ */
+async function doDeleteMenu (menu_id) {
+  try {
+    const menu = await Menus.findOne({
+      where: {
+        id: menu_id
+      }
+    })
+    if (!menu) return { error: '菜单不存在' }
+    const roles = await menu.getRoles()
+    await menu.removeRoles(roles)
+    return []
+  } catch (err) {
+    return {
+      error: err.errors ? err.errors[0].message : '链接错误'
+    }
+  }
+}
 module.exports = {
   doAddMenu,
   doGetList,
-  doModifyMenu
+  doModifyMenu,
+  doDeleteMenu
 }

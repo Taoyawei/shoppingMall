@@ -7,7 +7,8 @@ const {requestParams} = require('../utils/errorInfo.js')
 const {
   doAddMenu,
   doGetList,
-  doModifyMenu
+  doModifyMenu,
+  doDeleteMenu
 } = require('../modules/menu.js')
 const {returnData, paramDefect} = require('../utils/utils.js')
  /**
@@ -70,8 +71,18 @@ async function modifyMenu ({id, menu_name, code, des, menu_ser, parent_id, menu_
   // console.log(result)
   return returnData(3003, result)
 }
+/**
+ * 删除菜单
+ * @param {number} menu_id 菜单id
+ */
+async function deleteMenu (menu_id) {
+  if (!paramDefect({menu_id})) return new ErrorModal(requestParams)
+  const result = await doDeleteMenu(menu_id)
+  return returnData(3004, result)
+}
 module.exports = {
   addMenu,
   getList,
-  modifyMenu
+  modifyMenu,
+  deleteMenu
 }

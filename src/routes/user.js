@@ -15,7 +15,7 @@ const {
 
 // 添加用户
 router.post('/add/user', checkLogin, async (ctx, next) => {
-  const { account, name, email, password, mobile, isEnable} = cts.request.body
+  const { account, name, email, password, mobile, isEnable} = ctx.request.body
   ctx.body = await addUser({
     account,
     name,
@@ -27,8 +27,8 @@ router.post('/add/user', checkLogin, async (ctx, next) => {
 })
 // 获取用户
 router.post('/get/list', checkLogin, async (ctx, next) => {
-  const { pageNo, pageSize } = ctx.request.body
-  ctx.body = await getList(pageNo, pageSize)
+  const { name, pageNo, pageSize } = ctx.request.body
+  ctx.body = await getList(name, pageNo, pageSize)
 })
 // 用户添加角色
 router.post('/add/role', checkLogin, async (ctx, next) => {

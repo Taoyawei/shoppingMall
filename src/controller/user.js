@@ -17,12 +17,13 @@ const {paramDefect, returnData} = require('../utils/utils.js')
 const {doCrypto} = require('../utils/crypto.js')
 /**
 * 获取用户列表
+* @param {*} name 搜索条件
 * @param {*} pageNo 页数
 * @param {*} pageSize 每页条数
 */
-async function getList (pageNo, pageSize) {
+async function getList (name, pageNo, pageSize) {
   if (!pageNo || !pageSize) return new ErrorModal(requestParams)
-  const result = await doGetList(pageNo, pageSize)
+  const result = await doGetList(name, pageNo, pageSize)
   // if (result && result.error) {
   //   return new ErrorModal({
   //     code: 4001,

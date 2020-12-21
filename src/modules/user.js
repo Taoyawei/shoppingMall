@@ -6,13 +6,16 @@ const {Users, Roles} = require('../db/modular/index.js')
 const {resultHandle} = require('../utils/utils.js')
 /**
  * 获取用户列表
+ * @param {string} name 搜索条件
  * @param {int} pageNo 页数
  * @param {int} pageSize 每页条数
  */
-async function doGetList (pageNo, pageSize) {
+async function doGetList (name, pageNo, pageSize) {
+  const item = name ? {name: name} : {}
   try {
     const result = await Users.findAndCountAll({
-      attributes: ['account', 'name', 'email', 'add_time', 'login_time', 'isEnable', 'mobile', 'password_account'],
+      attributes: ['id', 'account', 'name', 'email', 'add_time', 'login_time', 'isEnable', 'mobile', 'password_account'],
+      where: item,
       limit: pageSize,
       offset: (pageNo - 1) * pageSize
     })
@@ -93,7 +96,18 @@ async function doRemoveUser (user_id) {
  */
 async function doAddUser ({account, name, email, password, mobile, isEnable, password_account}) {
   try {
-    const reuslt = await Users.create({
+    // 先看改用户是否存在
+    const user = await Users.findOne({
+      where: {
+        account,
+        name,
+        mobile,
+        password,
+        email
+      }
+    })
+    if (user) return { error: '该用户已存在' }
+    const result = await Users.create({
       account,
       name,
       email,
@@ -101,10 +115,12 @@ async function doAddUser ({account, name, email, password, mobile, isEnable, pas
       mobile,
       isEnable,
       password_account,
-      add_time: (new Date()).getTime()
+      add_time: (new Date()).getTime(),
+      login_time: (new Date()).getTime()
     })
     return resultHandle(result)
   } catch(err) {
+    console.log(err)
     return {
       error: err.errors ? err.errors[0].message : '链接错误'
     }

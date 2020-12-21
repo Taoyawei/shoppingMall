@@ -7,7 +7,8 @@ const {checkLogin} = require('../utils/middle.js')
 const {
   addMenu,
   getList,
-  modifyMenu
+  modifyMenu,
+  deleteMenu
 } = require('../controller/menu.js')
 // 添加菜单
 router.post('/add', checkLogin, async (ctx, next) => {
@@ -37,5 +38,10 @@ router.post('/modify', checkLogin, async (ctx, next) => {
     parent_id,
     menu_icon
   })
+})
+// 删除菜单
+router.post('/delete', checkLogin, async (ctx, next) => {
+  const {menu_id} = ctx.request.body
+  ctx.body = await deleteMenu(menu_id)
 })
 module.exports = router
