@@ -19,7 +19,7 @@ async function doGoLogin ({account, password}) {
       login_time: date
     }
     const result = await Users.findOne({
-      attributes: ['account', 'name', 'login_time', 'email', 'isEnable', 'mobile'],
+      attributes: ['id', 'account', 'name', 'login_time', 'email', 'isEnable', 'mobile'],
       where: {
         account,
         password

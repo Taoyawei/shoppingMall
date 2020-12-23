@@ -36,7 +36,7 @@ const Commoditys = seq.define('commoditys', {
     comment: '商品描述'
   },
   price: {
-    type: Sequelize.INTEGER,
+    type: Sequelize.FLOAT,
     allowNull: false,
     defaultValue: 0,
     comment: '商品价格'
@@ -48,7 +48,7 @@ const Commoditys = seq.define('commoditys', {
     comment: '商品存储数量'
   },
   weight: {
-    type: Sequelize.INTEGER,
+    type: Sequelize.FLOAT,
     allowNull: false,
     defaultValue: 0,
     comment: '商品重量'

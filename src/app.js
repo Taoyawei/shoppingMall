@@ -29,6 +29,12 @@ app.use(koaBody({
     }
   }
 }))
+// 中间件
+// app.use(async (ctx, next) => {
+//   console.log(1)
+//   await next()
+//   console.log(2)
+// })
 app.use(cors())
 app.use(json())
 app.use(logger())

@@ -97,7 +97,7 @@ async function doGetList ({pageNo, pageSize, findName}) {
     }
   }
   try {
-    const result = await ComType.findAll({
+    const result = await ComType.findAndCountAll({
       where: obj,
       limit: pageSize,
       offset: (pageNo - 1) * pageSize

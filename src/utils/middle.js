@@ -5,6 +5,7 @@
 const {exists, get} = require('../redis/index')
 // 判断是否登录并验证token
 async function checkLogin (ctx, next) {
+  // console.log(111)
   // console.log(ctx.request.header)
   const info = ctx.request.header
   if (exists('userInfo')) {
