@@ -31,14 +31,15 @@ async function addMenu ({menu_name, parent_id, code, des, menu_ser, menu_icon}) 
     menu_ser,
     menu_icon
   })
-  if (result && result.error) {
-    return new ErrorModal({
-      code: 3001,
-      message: result.error
-    })
-  } else {
-    return new SuccessModal(reuslt)
-  }
+  // if (result && result.error) {
+  //   return new ErrorModal({
+  //     code: 3001,
+  //     message: result.error
+  //   })
+  // } else {
+  //   return new SuccessModal(reuslt)
+  // }
+  return returnData(result)
 }
 
 /**

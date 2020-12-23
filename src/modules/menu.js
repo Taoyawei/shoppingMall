@@ -3,7 +3,6 @@
  * @author taoyawei
  */
 const {Menus, Roles} = require('../db/modular/index.js')
-const {resultHandle} = require('../utils/utils.js')
 /**
  * 添加菜单
  * @param {string} menu_name 菜单名称
@@ -23,7 +22,7 @@ async function doAddMenu({menu_name, parent_id, code, des, menu_ser, menu_icon})
       menu_ser,
       menu_icon
     })
-    return resultHandle(result)
+    return result
   } catch(err) {
     return {
       error: err.errors ? err.errors[0].message : '链接错误'
@@ -107,16 +106,21 @@ async function doModifyMenu ({id, menu_name, parent_id, code, des, menu_ser, men
  */
 async function doDeleteMenu (menu_id) {
   try {
-    const menu = await Menus.findOne({
-      where: {
-        id: menu_id
-      }
-    })
-    if (!menu) return { error: '菜单不存在' }
-    const roles = await menu.getRoles()
-    await menu.removeRoles(roles)
+    for (let i = 0; i < menu_id.length; i++) {
+      const menu = await Menus.findOne({
+        where: {
+          id: menu_id[i]
+        }
+      })
+      if (!menu) return { error: '菜单不存在' }
+      const roles = await menu.getRoles()
+      await menu.removeRoles(roles)
+      await menu.destroy()
+    }
+    // destroy
     return []
   } catch (err) {
+    console.log(err)
     return {
       error: err.errors ? err.errors[0].message : '链接错误'
     }
