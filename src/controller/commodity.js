@@ -8,7 +8,10 @@ const {requestParams} = require('../utils/errorInfo.js')
 const fs = require('fs')
 
 const {
-  doAddCommodity
+  doAddCommodity,
+  doGetList,
+  doModifyCom,
+  doGetDetail
 } = require('../modules/commodity.js')
 /**
  * 新建商品
@@ -65,8 +68,72 @@ async function upImg (id, img) {
   reader.pipe(upStream)
   return returnData(7002, [])
 }
-
+/**
+ * 获取商品列表
+ * @param {string} name 商品名称
+ * @param {int} com_type_id 商品类型id
+ * @param {int} brand_id 品牌id
+ * @param {boolean} isShelf 是否上架
+ * @param {int} pageNo 页数
+ * @param {int} pageSize 每页条数
+ */
+async function getList ({name, com_type_id, brand_id, isShelf, pageNo, pageSize}) {
+  if (!paramDefect({pageNo, pageSize})) return new ErrorModal(requestParams)
+  const result = await doGetList({
+    name,
+    com_type_id,
+    brand_id,
+    isShelf,
+    pageNo,
+    pageSize
+  })
+  return returnData(7003, result, 1)
+}
+/**
+ * 根据商品id获取商品详情
+ * @param {int} id 商品id 
+ */
+async function getDetail (id) {
+  if (!paramDefect({id})) return new ErrorModal(requestParams)
+  const result = await doGetDetail(id)
+  return returnData(7005, result, 1)
+}
+/**
+ * 修改商品
+ * @param {int} id 商品id
+ * @param {string} name 商品名称
+ * @param {int} com_type_id 商品类型id
+ * @param {string} com_brand 品牌
+ * @param {int} brand_id 品牌id
+ * @param {float} price 价格
+ * @param {int} number 数量
+ * @param {string} des 商品简介
+ * @param {float} weight 商品重量
+ * @param {boolean} isShelf 是否上架
+ * @param {string} com_detail 商品详情
+ * 
+ */
+async function modifyCom({id, name, com_type_id, com_brand, brand_id, price, number, des, weight, isShelf, com_detail}) {
+  if (!paramDefect({id, name, com_type_id, com_brand, brand_id, price, number, weight})) return new ErrorModal(requestParams)
+  const result = await doModifyCom({
+    id,
+    name,
+    com_type_id,
+    com_brand,
+    brand_id,
+    price,
+    number,
+    des,
+    weight,
+    isShelf,
+    com_detail
+  })
+  return returnData(7004, result)
+}
 module.exports = {
   upImg,
-  addCommodity
+  addCommodity,
+  getList,
+  modifyCom,
+  getDetail
 }

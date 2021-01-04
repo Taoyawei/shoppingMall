@@ -2,7 +2,8 @@
  * @abstract 商品模块modules
  * @author taoyawei
  */
-const {Commoditys} = require('../db/modular/index.js')
+const fs = require('fs')
+const {Commoditys, ComType} = require('../db/modular/index.js')
 /**
  * 新建商品
  * @param {string} name 商品名称
@@ -49,7 +50,113 @@ async function doAddCommodity ({name, com_type_id, com_brand, brand_id, price, n
     }
   }
 }
-
+/**
+ * 获取商品列表
+ * @param {string} name 商品名称
+ * @param {int} com_type_id 商品类型id
+ * @param {int} brand_id 品牌id
+ * @param {boolean} isShelf 是否上架，默认查询上架商品
+ * @param {int} pageNo 页数
+ * @param {int} pageSize 每页条数
+ * 
+ */
+async function doGetList ({name, com_type_id, brand_id, isShelf, pageNo, pageSize}) {
+  const item = {}
+  if (name) item.name = name
+  if (com_type_id) item.com_type_id = com_type_id
+  if (brand_id) item.brand_id = brand_id
+  item.isShelf = isShelf
+  try {
+    const result = await Commoditys.findAndCountAll({
+      attributes: ['id', 'name', 'com_brand', 'brand_id', 'price', 'number', 'weight', 'isShelf', 'com_img', 'order_number'],
+      where: item,
+      include: [{
+        model: ComType,
+        attributes: ['id', 'name'] 
+      }],
+      limit: pageSize,
+      offset: (pageNo - 1) * pageSize
+    })
+    // 获取商品图片列表
+    // fs.readdirSync('src/comImg')
+    const imgs = fs.readdirSync('src/comImg')
+    // console.log(imgs)
+    result.rows.forEach(res => {
+      imgs.forEach(n => {
+        if (n.split('.')[0].split('&')[1] === res.id.toString()) {
+          res.com_img = `/src/comImg/${n}`
+        }
+      })
+    })
+    return result
+  } catch(err) {
+    console.log(err)
+    return {
+      error: err.errors ? err.errors[0].message : '连接错误'
+    }
+  }
+}
+/**
+ * 根据商品id获取商品详情
+ * @param {int} id 商品id 
+ */
+async function doGetDetail (id) {
+  try {
+    const result = await Commoditys.findOne({
+      where: {
+        id
+      }
+    })
+    return result
+  } catch(err) {
+    return {
+      error: err.errors ? err.errors[0].message : '连接错误'
+    }
+  }
+}
+/**
+ * 修改商品
+ * @param {int} id 商品id
+ * @param {string} name 商品名称
+ * @param {int} com_type_id 商品类型id
+ * @param {string} com_brand 品牌
+ * @param {int} brand_id 品牌id
+ * @param {float} price 价格
+ * @param {int} number 数量
+ * @param {string} des 商品简介
+ * @param {float} weight 商品重量
+ * @param {boolean} isShelf 是否上架
+ * @param {string} com_detail 商品详情
+ */
+async function doModifyCom ({id, name, com_type_id, com_brand, brand_id, price, number, des, weight, isShelf, com_detail}) {
+  try {
+    const item = {
+      name,
+      com_type_id,
+      com_brand,
+      brand_id,
+      price,
+      number,
+      des: des ? des : null,
+      weight,
+      isShelf,
+      com_detail: com_detail ? com_detail : null
+    }
+    const result = await Commoditys.update(item, {
+      where: {
+        id
+      }
+    })
+    return result
+  } catch(err) {
+    return {
+      error: err.errors ? err.errors[0].message : '连接错误'
+    }
+  }
+}
 module.exports = {
-  doAddCommodity
+  doAddCommodity,
+  doGetList,
+  doGetDetail,
+  doModifyCom
 }
