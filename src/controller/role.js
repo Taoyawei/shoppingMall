@@ -9,7 +9,8 @@ const {
   doConfigRole,
   doGetList,
   doMobileRole,
-  doDeleteRole
+  doDeleteRole,
+  doGetAll
 } = require('../modules/role.js')
 const {paramDefect, returnData} = require('../utils/utils.js')
  /**
@@ -47,6 +48,15 @@ async function getList (pageNo, pageSize, name) {
   } else {
     return new SuccessModal(result)
   }
+}
+
+/**
+ * 获取所有角色列表
+ * @param {int} user_id 用户id
+ */
+async function getAll (user_id) {
+  const result = await doGetAll(user_id)
+  return returnData(2005, result, 1)
 }
 
 /**
@@ -95,5 +105,6 @@ module.exports = {
   configRole,
   getList,
   mobileRole,
-  deleteRole
+  deleteRole,
+  getAll
 }

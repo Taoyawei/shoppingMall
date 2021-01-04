@@ -44,9 +44,10 @@ async function addMenu ({menu_name, parent_id, code, des, menu_ser, menu_icon}) 
 
 /**
  * 获取菜单
+ * @param {int} role_id 角色id,可选
  */
-async function getList () {
-  const result = await doGetList()
+async function getList (role_id) {
+  const result = await doGetList(role_id)
   if (result && result.error) {
     return new ErrorModal({
       code: 3002,

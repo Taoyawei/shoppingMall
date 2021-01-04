@@ -23,8 +23,9 @@ router.post('/add', checkLogin, async (ctx, next) => {
   })
 } )
 // 获取菜单列表
-router.get('/list', checkLogin, async (ctx, next) => {
-  ctx.body = await getList()
+router.post('/list', checkLogin, async (ctx, next) => {
+  const {role_id} = ctx.request.body
+  ctx.body = await getList(role_id)
 })
 // 修改菜单
 router.post('/modify', checkLogin, async (ctx, next) => {

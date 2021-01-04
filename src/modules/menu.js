@@ -31,14 +31,37 @@ async function doAddMenu({menu_name, parent_id, code, des, menu_ser, menu_icon})
 }
 /**
  * 查询菜单列表
+ * @param {int} role_id 角色id,可选
  */
-async function doGetList () {
+async function doGetList (role_id) {
   try {
+    // 获取所有菜单列表
     const result = await Menus.findAll({
-      attributes: ['id', 'menu_name', 'code', 'des', 'menu_ser', 'parent_id', 'menu_icon']
+      attributes: ['id', 'menu_name', 'code', 'des', 'menu_ser', 'parent_id', 'menu_icon'],
+      raw: true
     })
+    if (role_id) {
+      // 先获取对应角色
+      const role = await Roles.findOne({
+        where: {
+          id: role_id
+        }
+      })
+      if (!role) return { error: '该角色不存在' }
+      // 获取角色对应菜单中间表的数据
+      const arr = await role.getMenus({
+        raw: true
+      })
+      const menus = arr.map(item => item.id)
+      result.forEach(res => {
+        if (menus.indexOf(res.id) !== -1) res.isCheck = true
+        else res.isCheck = false
+      })
+    }
+    // console.log(result)
     return result
   } catch (err) {
+    console.log(err)
     return {
       error: err.errors ? err.errors[0].message : '链接错误'
     }

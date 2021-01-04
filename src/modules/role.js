@@ -59,6 +59,33 @@ async function doGetList (pageNo, pageSize, name) {
   }
 }
 /**
+ * 获取所有角色列表
+ */
+async function doGetAll (user_id) {
+  try {
+    const user = await Users.findOne({
+      where: {
+        id: user_id
+      }
+    })
+    if (!user) return { error: '该用户不存在' }
+    const ids = (await user.getRoles({raw: true})).map(item => item.id) // 获取拥有的角色id集合
+    const result = await Roles.findAll({
+      raw: true
+    })
+    result.forEach(res => {
+      if (ids.indexOf(res.id) !== -1) res.default = true
+      else res.default = false
+    })
+    return result
+  } catch (err) {
+    console.log(err)
+    return {
+      error: err.errors ? err.errors[0].message : '连接错误'
+    }
+  }
+}
+/**
  * 角色添加菜单权限
  * @param {int} role_id 角色id
  * @param {Array} list 菜单的id和是否勾选数组
@@ -71,14 +98,17 @@ async function doConfigRole (role_id, list) {
         id: role_id
       }
     })
+    // console.log(role)
     for (let i = 0; i < list.length; i++) {
       const menu = await Menus.findOne({
         where: {
           id: list[i].id
         }
       })
+      // console.log(menu)
       // 查询中间表是否存在这条数据
-      const middle = await role.getMenus(menu)
+      const middle = await role.hasMenus(menu)
+      // console.log(middle)
       if (!middle && list[i].isCheck) { // 如果没有这条数据，且这个菜单是勾选的
         await role.addMenus(menu) // 添加这条数据
       } else if (middle && !list[i].isCheck) { // 如果存在这条数据且没有被勾选
@@ -87,6 +117,7 @@ async function doConfigRole (role_id, list) {
     }
     return []
   } catch(err) {
+    console.log(err)
     return {
       error: err.errors ? err.errors[0].message : '链接错误'
     }
@@ -166,5 +197,6 @@ module.exports = {
   doConfigRole,
   doGetList,
   doMobileRole,
-  doDeleteRole
+  doDeleteRole,
+  doGetAll
 }

@@ -9,7 +9,8 @@ const {
   configRole,
   getList,
   mobileRole,
-  deleteRole
+  deleteRole,
+  getAll
 } = require('../controller/role.js')
 
 // 添加角色
@@ -25,6 +26,11 @@ router.post('/add', checkLogin, async (ctx, next) => {
 router.post('/get/list', checkLogin, async (ctx, next) => {
   const { pageNo, pageSize, name } = ctx.request.body
   ctx.body = await getList(pageNo, pageSize, name)
+})
+// 获取所有角色列表
+router.post('/get/all', checkLogin, async (ctx, next) => {
+  const {user_id} = ctx.request.body
+  ctx.body = await getAll(user_id)
 })
 // 角色配置权限
 router.post('/to/config', checkLogin, async (ctx, next) => {
