@@ -11,7 +11,8 @@ const {
   doAddCommodity,
   doGetList,
   doModifyCom,
-  doGetDetail
+  doGetDetail,
+  doDeleteCom
 } = require('../modules/commodity.js')
 /**
  * 新建商品
@@ -130,10 +131,20 @@ async function modifyCom({id, name, com_type_id, com_brand, brand_id, price, num
   })
   return returnData(7004, result)
 }
+/**
+ * 删除商品
+ * @param {Array} ids 商品id
+ */
+async function deleteCom (ids) {
+  // if (!paramDefect({ids})) return new ErrorModal(requestParams)
+  const result = await doDeleteCom(ids)
+  return returnData(7005, result)
+}
 module.exports = {
   upImg,
   addCommodity,
   getList,
   modifyCom,
-  getDetail
+  getDetail,
+  deleteCom
 }

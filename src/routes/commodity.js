@@ -9,7 +9,8 @@ const {
   addCommodity,
   getList,
   modifyCom,
-  getDetail
+  getDetail,
+  deleteCom
 } = require('../controller/commodity.js')
 // 添加商品
 router.post('/add', checkLogin, async (ctx, next) => {
@@ -67,5 +68,10 @@ router.post('/modify', checkLogin, async (ctx, next) => {
     isShelf,
     com_detail
   })
+})
+// 删除商品
+router.post('/delete', checkLogin, async (ctx, next) => {
+  const {ids} = ctx.request.body
+  ctx.body = await deleteCom(ids)
 })
 module.exports = router

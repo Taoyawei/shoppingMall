@@ -154,9 +154,35 @@ async function doModifyCom ({id, name, com_type_id, com_brand, brand_id, price, 
     }
   }
 }
+/**
+ * 删除商品
+ * @param {Array} ids 商品id
+ */
+async function doDeleteCom (ids) {
+  try {
+    for (let i = 0; i < ids.length; i++) {
+      const com = await Commoditys.findOne({
+        where: {
+          id: ids[i]
+        }
+      })
+      if (!com) return { error: '该商品不存在' }
+      // removeRoles
+      const orders = await com.getOrders() // 获取商品对应商品-订单中间表的数据
+      await com.removeOrders(orders) // 删除对应订单的中间表数据
+      await com.destroy() // 删除商品
+    }
+    return []
+  } catch (err) {
+    return {
+      error: err.errors ? err.errors[0].message : '链接错误'
+    }
+  }
+}
 module.exports = {
   doAddCommodity,
   doGetList,
   doGetDetail,
-  doModifyCom
+  doModifyCom,
+  doDeleteCom
 }
